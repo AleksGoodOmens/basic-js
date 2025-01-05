@@ -24,49 +24,28 @@ const { NotImplementedError } = require('../extensions/index.js');
  * ]
  */
 function minesweeper(matrix) {
-	return matrix.reduce((acc, curL, indx, mat) => {
-		const mineField = curL.map((line, i) => {
-			if (line) {
-				return 1;
-			} else {
-				let counter = 0;
+	return matrix.map((row, rowIndex) =>
+		row.map((cell, colIndex) => {
+			if (cell) return 1;
 
-				// top line mines
-				if (indx > 0) {
-					if (i > 0) {
-						if (mat[indx - 1][i - 1]) counter++;
-					}
-					if (mat[indx - 1][i]) counter++;
-					if (i < curL.length - 1) {
-						if (mat[indx - 1][i + 1]) counter++;
-					}
-				}
-				// middle line mines
-				if (i > 0) {
-					if (mat[indx][i - 1]) counter++;
-				}
-				if (i < curL.length - 1) {
-					if (mat[indx][i + 1]) counter++;
-				}
+			let counter = 0;
 
-				// bottom line mines
-				if (indx < mat.length - 1) {
-					if (i > 0) {
-						if (mat[indx + 1][i - 1]) counter++;
-					}
-					if (mat[indx + 1][i]) counter++;
+			for (let dx = -1; dx <= 1; dx++) {
+				for (let dy = -1; dy <= 1; dy++) {
+					if (dx === 0 && dy === 0) continue;
 
-					if (i < curL.length - 1) {
-						if (mat[indx + 1][i + 1]) counter++;
+					const newRow = rowIndex + dx;
+					const newCol = colIndex + dy;
+
+					if (newRow >= 0 && newRow < matrix.length && newCol >= 0 && newCol < row.length && matrix[newRow][newCol]) {
+						counter++;
 					}
 				}
-
-				return counter;
 			}
-		});
-		acc.push(mineField);
-		return acc;
-	}, []);
+
+			return counter;
+		})
+	);
 }
 
 module.exports = {
